@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Realtime Chat App</title>
+    <link rel="stylesheet" href="../stylesheets/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="sender-side">
+        <!-- place for messages -->
+        <div id="container"></div>
+      </div>
+      <div class="client-side">
+        <div class="messages">
+          
+        </div>
+        <div class="messageinputbox">
+          <form class="messageinput">
+            <input
+              type="text"
+              name="message"
+              id="message"
+              placeholder="Type Message"
+            />
+            <button type="submit">
+              <img src="./sent.png" alt="send" />
+            </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <script>
+      const socket = io();
+      const name = prompt("Enter your Name: ");
+      const input = document.getElementById("message");
+      const form = document.querySelector("form");
+      const messages = document.querySelector(".sender-side #container");
+      
+      form.addEventListener("submit",(e)=>{
+        e.preventDefault();
+        if (input.value){
+          socket.emit("chat-message",{"user":socket.id,"name":name,"msg":input.value});
+          messages.insertAdjacentHTML("beforeend",`<div id = "you" class = "messagebox"><h5>${name}</h5><div>${input.value}</div></div>`);
+          input.value = "";
+        }
+      });
+      socket.on("recv-message",(obj)=>{
+        
+        if (obj.user != socket.id || obj.name != name){
+          messages.insertAdjacentHTML("beforeend",`<div class = "messagebox"><h5>${obj.name}</h5><div>${obj.msg}</div></div>`);
+        }
+      });
+    </script>
+  </body>
+</html>
