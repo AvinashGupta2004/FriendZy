@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
+const port = process.env.PORT || 3000;
 
 app.set("view engine","ejs");
 app.set("views",join(__dirname,"public/views"));
@@ -29,6 +30,6 @@ io.on("connection",(socket)=>{
     })
 });
 
-server.listen(3000,()=>{
-    console.log("Server is running on port 3000");
+server.listen(port,()=>{
+    console.log("Server is running!");
 })
